@@ -86,13 +86,13 @@ export default function Home() {
     );
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">待辦事項日曆</h1>
-        <div className="flex gap-4">
+    <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-6xl">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-8 space-y-4 sm:space-y-0">
+        <h1 className="text-2xl sm:text-3xl font-bold">待辦事項日曆</h1>
+        <div className="flex gap-2 sm:gap-4">
           <button
             onClick={() => setViewMode("list")}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-sm sm:text-base ${
               viewMode === "list"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
@@ -102,7 +102,7 @@ export default function Home() {
           </button>
           <button
             onClick={() => setViewMode("calendar")}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-sm sm:text-base ${
               viewMode === "calendar"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
@@ -113,29 +113,31 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-8">
         <form onSubmit={handleSubmit}>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <input
               type="text"
               name="title"
               placeholder="新增待辦事項..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               required
             />
-            <input
-              type="datetime-local"
-              name="dueDate"
-              min={new Date().toISOString().slice(0, 16)}
-              className="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-            >
-              新增
-            </button>
+            <div className="flex gap-2 sm:gap-4">
+              <input
+                type="datetime-local"
+                name="dueDate"
+                min={new Date().toISOString().slice(0, 16)}
+                className="flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                required
+              />
+              <button
+                type="submit"
+                className="px-4 sm:px-6 py-1.5 sm:py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm sm:text-base whitespace-nowrap"
+              >
+                新增
+              </button>
+            </div>
           </div>
         </form>
       </div>
