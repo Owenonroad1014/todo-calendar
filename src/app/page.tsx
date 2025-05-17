@@ -1,103 +1,132 @@
-import Image from "next/image";
+// app/page.tsx
+"use client";
+import { useState, useCallback } from "react";
+import { SearchAndFilter } from "./components/SearchAndFilter";
+import { SortableList } from "./components/SortableList";
+import { Todo } from "./types/todo";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { DeleteConfirmModal } from "./components/DeleteConfirmModal";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [todos, setTodos] = useLocalStorage<Todo[]>("todos", []);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState<Todo | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const title = formData.get("title") as string;
+      const dueDateStr = formData.get("dueDate") as string;
+
+      const newTodo: Todo = {
+        id: uuidv4(),
+        title,
+        completed: false,
+        dueDate: dueDateStr ? new Date(dueDateStr) : undefined,
+      };
+
+      setTodos((prev) => [...prev, newTodo]);
+      (e.target as HTMLFormElement).reset();
+    },
+    [setTodos]
+  );
+
+  const handleToggle = useCallback(
+    (id: string) => {
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        )
+      );
+    },
+    [setTodos]
+  );
+
+  const handleSort = useCallback(
+    (oldIndex: number, newIndex: number) => {
+      setTodos((prev) => {
+        const copy = [...prev];
+        const [removed] = copy.splice(oldIndex, 1);
+        copy.splice(newIndex, 0, removed);
+        return copy;
+      });
+    },
+    [setTodos]
+  );
+
+  const handleDeleteTodo = useCallback((todo: Todo) => {
+    setTodoToDelete(todo);
+    setDeleteModalOpen(true);
+  }, []);
+
+  const confirmDelete = useCallback(() => {
+    if (todoToDelete) {
+      setTodos((prev) => prev.filter((todo) => todo.id !== todoToDelete.id));
+      setTodoToDelete(null);
+    }
+  }, [todoToDelete, setTodos]);
+
+  const filteredTodos = todos
+    .filter((todo) => {
+      if (filter === "active") return !todo.completed;
+      if (filter === "completed") return todo.completed;
+      return true;
+    })
+    .filter((todo) =>
+      todo.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+  return (
+    <main className="container mx-auto px-4 py-8 max-w-2xl">
+      <h1 className="text-3xl font-bold mb-8">Todo App</h1>
+
+      <div className="mb-8">
+        <form onSubmit={handleSubmit}>
+          <div className="flex gap-4">
+            <input
+              type="text"
+              name="title"
+              placeholder="新增待辦事項..."
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500
+              text-white placeholder-gray-400"
+              required
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <input
+              type="datetime-local"
+              name="dueDate"
+              min={new Date().toISOString().slice(0, 16)}
+              className="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <button
+              type="submit"
+              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            >
+              新增
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <SearchAndFilter onSearch={setSearchQuery} onFilter={setFilter} />
+
+      <SortableList
+        todos={filteredTodos}
+        onSortEnd={handleSort}
+        onToggle={handleToggle}
+        onDelete={handleDeleteTodo}
+      />
+
+      <DeleteConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        todoTitle={todoToDelete?.title}
+      />
+    </main>
   );
 }
