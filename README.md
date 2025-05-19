@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 待辦事項日曆 (Todo Calendar)
 
-## Getting Started
+一個結合待辦事項和日曆功能的現代化網頁應用程式，使用 Next.js 和 React 開發。
 
-First, run the development server:
+## 線上演示
+
+🌐 線上版本：[https://todo-app2-pied-eta.vercel.app/](https://todo-app2-pied-eta.vercel.app/)
+
+## 功能特點
+
+### 1. 雙重視圖模式
+
+- **日曆視圖**：以月曆形式顯示待辦事項
+
+  - 清晰顯示每日待辦事項數量
+  - 支援月份切換
+  - 待辦事項卡片式顯示
+  - 完成狀態視覺化
+  - 響應式設計，適配各種螢幕尺寸
+
+- **列表視圖**：傳統待辦事項列表
+  - 支援拖放排序
+  - 搜尋和篩選功能
+  - 完成狀態切換
+  - 優化的移動端體驗
+
+### 2. 待辦事項管理
+
+- 新增待辦事項（包含標題和截止時間）
+- 標記完成/未完成
+- 刪除待辦事項
+- 拖放排序（列表視圖）
+- 即時搜尋和篩選
+
+### 3. 響應式設計
+
+- 適配各種螢幕尺寸
+- 手機友好的介面
+- 優化的觸控體驗
+- 流暢的動畫效果
+
+### 4. 資料持久化
+
+- 使用 localStorage 保存資料
+- 自動同步狀態
+- 離線支援
+
+## 技術棧
+
+- **前端框架**：
+
+  - Next.js 15.3.2
+  - React 19
+  - TypeScript
+
+- **UI 組件**：
+
+  - Tailwind CSS
+  - @dnd-kit/core（拖放功能）
+  - @dnd-kit/sortable
+
+- **開發工具**：
+  - ESLint
+  - TypeScript
+  - PostCSS
+
+## 開始使用
+
+### 安裝依賴
+
+```bash
+npm install
+```
+
+### 開發模式
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 建置專案
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 啟動生產環境
 
-## Learn More
+```bash
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 使用說明
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **新增待辦事項**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - 在頂部輸入框中輸入待辦事項標題
+   - 選擇截止時間
+   - 點擊「新增」按鈕
 
-## Deploy on Vercel
+2. **切換視圖模式**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   - 點擊右上角的「列表視圖」或「日曆視圖」按鈕
+   - 在日曆視圖中可以查看每月待辦事項
+   - 在列表視圖中可以拖放排序
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **管理待辦事項**
+
+   - 點擊待辦事項前的方框標記完成/未完成
+   - 點擊待辦事項右側的 × 按鈕刪除
+   - 在列表視圖中可以拖動待辦事項改變順序
+
+4. **搜尋和篩選**
+   - 使用搜尋框搜尋待辦事項
+   - 使用篩選按鈕篩選全部/未完成/已完成項目
+
+## 開發說明
+
+### 專案結構
+
+```
+todo-calendar/
+├── src/
+│   ├── app/
+│   │   ├── components/    # 可重用組件
+│   │   ├── hooks/        # 自定義 Hooks
+│   │   ├── types/        # TypeScript 類型定義
+│   │   └── page.tsx      # 主頁面
+│   └── ...
+├── public/               # 靜態資源
+└── ...
+```
+
+### 主要組件
+
+- `Calendar.tsx`: 日曆視圖組件
+- `SortableList.tsx`: 可排序列表組件
+- `SearchAndFilter.tsx`: 搜尋和篩選組件
+
+## 未來計劃
+
+- [ ] 添加週視圖
+- [ ] 支援重複性待辦事項
+- [ ] 添加提醒功能
+- [ ] 支援多個日曆
+- [ ] 添加資料匯出功能
+
+## 授權
+
+MIT License
